@@ -4,6 +4,8 @@
 #ifndef SYS_TIME_H
 #define SYS_TIME_H
 
+#ifndef __MINGW32__
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +27,8 @@ void sleep(int sec);
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif

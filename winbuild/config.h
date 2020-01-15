@@ -7,17 +7,6 @@
 #ifndef WATCHMAN_SUPER_PEDANTIC
 // Each of these is something that we should address :-/
 
-// Buffer overrun; false positives unless we use functions like strcpy_s
-#pragma warning(disable: 6386)
-// NULL pointer deref
-#pragma warning(disable: 6011)
-
-// sign mismatch in printf args
-#pragma warning(disable: 6340)
-
-// String might not be zero terminated (false positives)
-#pragma warning(disable: 6054)
-
 #endif
 
 #define _ALLOW_KEYWORD_MACROS
@@ -72,11 +61,10 @@ char *dirname(char *path);
 int gethostname(char *buf, int size);
 char *realpath(const char *filename, char *target);
 
+#define _O_OBTAIN_DIR  0  // get information about a directory
 #define O_DIRECTORY _O_OBTAIN_DIR
 #define O_CLOEXEC _O_NOINHERIT
 #define O_NOFOLLOW 0 /* clowny, but there's no translation */
-
-typedef DWORD pid_t;
 
 #define HAVE_BACKTRACE
 #define HAVE_BACKTRACE_SYMBOLS
