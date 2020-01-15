@@ -8,6 +8,10 @@
 # include <sys/vnode.h>
 #endif
 
+#ifndef _WIN32
+#define os_lstat(p, s) lstat(p, s)
+#endif
+
 #ifdef HAVE_GETATTRLISTBULK
 typedef struct {
   uint32_t len;
@@ -343,7 +347,7 @@ int w_lstat(const char *path, struct stat *st, bool case_sensitive) {
   res = fstatat(fd, slash + 1, st, AT_SYMLINK_NOFOLLOW);
   err = errno;
 #else
-  res = lstat(path, st);
+  res = os_lstat(path, st);
   err = errno;
 #endif
 
@@ -364,14 +368,13 @@ out:
 /* Opens a directory making sure it's not a symlink */
 static DIR *opendir_nofollow(const char *path)
 {
+#ifdef _WIN32
+  return win_opendir(path, 1 /* no follow */);
+#else
   int fd = open_strict(path, O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC);
   if (fd == -1) {
     return NULL;
   }
-#ifdef _WIN32
-  close(fd);
-  return win_opendir(path, 1 /* no follow */);
-#else
 # if !defined(HAVE_FDOPENDIR) || defined(__APPLE__)
   /* fdopendir doesn't work on earlier versions OS X, and we don't
    * use this function since 10.10, as we prefer to use getattrlistbulk

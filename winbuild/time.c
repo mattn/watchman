@@ -43,6 +43,7 @@ int gettimeofday(struct timeval *tv, void *ignored) {
   return 0;
 }
 
+#ifndef __MINGW32__
 void usleep(int64_t usec) {
   HANDLE timer;
   LARGE_INTEGER ft;
@@ -63,3 +64,4 @@ void usleep(int64_t usec) {
 void sleep(int sec) {
   SleepEx(sec * 1000, true);
 }
+#endif

@@ -167,7 +167,8 @@ void w_log(int level, WATCHMAN_FMT_STRING(const char *fmt), ...)
 
   gettimeofday(&tv, NULL);
 #ifdef _WIN32
-  tm = *localtime(&tv.tv_sec);
+  time_t tt = tv.tv_sec;
+  tm = *localtime(&tt);
 #else
   localtime_r(&tv.tv_sec, &tm);
 #endif

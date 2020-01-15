@@ -3,6 +3,7 @@
 #include "watchman.h"
 #ifndef _WIN32
 #include <poll.h>
+#define os_mkdir(p, f) mkdir(p, f)
 #endif
 
 static int show_help = 0;
@@ -431,7 +432,7 @@ static void spawn_via_launchd(void)
       "%s/Library/LaunchAgents", pw->pw_dir);
   // Best effort attempt to ensure that the agents dir exists.  We'll detect
   // and report the failure in the fopen call below.
-  mkdir(plist_path, 0755);
+  os_mkdir(plist_path, 0755);
   snprintf(plist_path, sizeof(plist_path),
       "%s/Library/LaunchAgents/com.github.facebook.watchman.plist", pw->pw_dir);
 
@@ -628,7 +629,7 @@ static void compute_file_name(char **strp,
       exit(1);
     }
 
-    if (mkdir(state_dir, 0700) == 0 || errno == EEXIST) {
+    if (os_mkdir(state_dir, 0755) == 0 || errno == EEXIST) {
 #ifndef _WIN32
       // verify ownership
       struct stat st;

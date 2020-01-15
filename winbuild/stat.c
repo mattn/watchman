@@ -3,7 +3,7 @@
 
 #include "watchman.h"
 
-int mkdir(const char *path, int mode) {
+int os_mkdir(const char *path, int mode) {
   WCHAR *wpath = w_utf8_to_win_unc(path, -1);
   DWORD err;
   BOOL res;
@@ -46,7 +46,7 @@ int open_and_share(const char *path, int flags, ...) {
   return fd;
 }
 
-int lstat(const char *path, struct stat *st) {
+int os_lstat(const char *path, struct stat *st) {
   FILE_BASIC_INFO binfo;
   FILE_STANDARD_INFO sinfo;
   WCHAR *wpath = w_utf8_to_win_unc(path, -1);
@@ -80,12 +80,18 @@ int lstat(const char *path, struct stat *st) {
   }
 
   if (GetFileInformationByHandleEx(h, FileBasicInfo, &binfo, sizeof(binfo))) {
+#ifdef _MSC_VER
     FILETIME_LARGE_INTEGER_to_timespec(binfo.CreationTime, &st->st_ctim);
     st->st_ctime = st->st_ctim.tv_sec;
     FILETIME_LARGE_INTEGER_to_timespec(binfo.LastAccessTime, &st->st_atim);
     st->st_atime = st->st_atim.tv_sec;
     FILETIME_LARGE_INTEGER_to_timespec(binfo.LastWriteTime, &st->st_mtim);
     st->st_mtime = st->st_mtim.tv_sec;
+#else
+    FILETIME_LARGE_INTEGER_to_timespec(binfo.CreationTime, &st->st_ctime);
+    FILETIME_LARGE_INTEGER_to_timespec(binfo.LastAccessTime, &st->st_atime);
+    FILETIME_LARGE_INTEGER_to_timespec(binfo.LastWriteTime, &st->st_mtime);
+#endif
 
     if (binfo.FileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) {
       // This is a symlink, but msvcrt has no way to indicate that.

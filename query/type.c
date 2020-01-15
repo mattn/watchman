@@ -22,10 +22,14 @@ static bool eval_type(struct w_query_ctx *ctx,
       return S_ISREG(file->stat.mode);
     case 'p':
       return S_ISFIFO(file->stat.mode);
+#ifdef S_ISLNK
     case 'l':
       return S_ISLNK(file->stat.mode);
+#endif
+#ifdef S_ISSOCK
     case 's':
       return S_ISSOCK(file->stat.mode);
+#endif
 #ifdef S_ISDOOR
     case 'D':
       return S_ISDOOR(file->stat.mode);

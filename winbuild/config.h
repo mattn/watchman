@@ -8,17 +8,6 @@
 #ifndef WATCHMAN_SUPER_PEDANTIC
 // Each of these is something that we should address :-/
 
-// Buffer overrun; false positives unless we use functions like strcpy_s
-#pragma warning(disable: 6386)
-// NULL pointer deref
-#pragma warning(disable: 6011)
-
-// sign mismatch in printf args
-#pragma warning(disable: 6340)
-
-// String might not be zero terminated (false positives)
-#pragma warning(disable: 6054)
-
 #endif
 
 #define inline __inline
@@ -29,6 +18,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <process.h>
 #include <io.h>
 #include <sys/types.h>
@@ -38,17 +28,12 @@
 extern void w_abort(void);
 
 typedef ptrdiff_t ssize_t;
+typedef unsigned long uid_t;
+typedef unsigned long gid_t;
+typedef unsigned long nlink_t;
 
 #define WATCHMAN_DIR_SEP '\\'
 #define WATCHMAN_DIR_DOT '.'
-
-static inline long __sync_fetch_and_add(volatile long *target, long add) {
-  return _InterlockedExchangeAdd(target, add);
-}
-
-static inline long __sync_add_and_fetch(volatile long *target, long add) {
-  return _InterlockedAdd(target, add);
-}
 
 const char *win32_strerror(DWORD err);
 char *w_win_unc_to_utf8(WCHAR *wpath, int pathlen, uint32_t *outlen);
@@ -56,14 +41,9 @@ WCHAR *w_utf8_to_win_unc(const char *path, int pathlen);
 int map_win32_err(DWORD err);
 int map_winsock_err(void);
 
-#if _MSC_VER >= 1400
 # include <sal.h>
-# if _MSC_VER > 1400
 #  define WATCHMAN_FMT_STRING(x) _Printf_format_string_ x
-# else
-#  define WATCHMAN_FMT_STRING(x) __format_string x
-# endif
-#endif
+//#  define WATCHMAN_FMT_STRING(x) __format_string x
 
 #define snprintf _snprintf
 int asprintf(char **out, WATCHMAN_FMT_STRING(const char *fmt), ...);
@@ -77,11 +57,10 @@ char *dirname(char *path);
 int gethostname(char *buf, int size);
 char *realpath(const char *filename, char *target);
 
+#define _O_OBTAIN_DIR  0  // get information about a directory
 #define O_DIRECTORY _O_OBTAIN_DIR
 #define O_CLOEXEC _O_NOINHERIT
 #define O_NOFOLLOW 0 /* clowny, but there's no translation */
-
-typedef DWORD pid_t;
 
 #define HAVE_BACKTRACE
 #define HAVE_BACKTRACE_SYMBOLS

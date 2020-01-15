@@ -98,9 +98,11 @@ static json_t *make_type_field(struct watchman_rule_match *match) {
   if (S_ISDIR(match->file->stat.mode)) {
     return typed_string_to_json("d", W_STRING_UNICODE);
   }
+#ifdef S_ISLNK
   if (S_ISLNK(match->file->stat.mode)) {
     return typed_string_to_json("l", W_STRING_UNICODE);
   }
+#endif
   if (S_ISBLK(match->file->stat.mode)) {
     return typed_string_to_json("b", W_STRING_UNICODE);
   }
@@ -110,9 +112,11 @@ static json_t *make_type_field(struct watchman_rule_match *match) {
   if (S_ISFIFO(match->file->stat.mode)) {
     return typed_string_to_json("p", W_STRING_UNICODE);
   }
+#ifdef S_ISSOCK
   if (S_ISSOCK(match->file->stat.mode)) {
     return typed_string_to_json("s", W_STRING_UNICODE);
   }
+#endif
 #ifdef S_ISDOOR
   if (S_ISDOOR(match->file->stat.mode)) {
     return typed_string_to_json("D", W_STRING_UNICODE);

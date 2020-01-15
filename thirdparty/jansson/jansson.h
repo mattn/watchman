@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>  /* for size_t */
 #include <stdarg.h>
+#include <stdbool.h>
 
 #include "jansson_config.h"
 #include "watchman_string.h" // Needed for w_string_t

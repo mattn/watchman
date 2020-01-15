@@ -10,10 +10,12 @@
 extern "C" {
 #endif
 
+#ifndef __MINGW32__
 typedef int mode_t;
 typedef int uid_t;
 typedef int gid_t;
 typedef int nlink_t;
+#endif
 
 // FIXME: don't do this, define our own layer
 struct stat {
@@ -29,8 +31,8 @@ struct stat {
   dev_t st_rdev;
 };
 
-int lstat(const char *path, struct stat *st);
-int mkdir(const char *path, int mode);
+int os_lstat(const char *path, struct stat *st);
+int os_mkdir(const char *path, int mode);
 int open_and_share(const char *path, int flags, ...);
 #define open open_and_share
 

@@ -138,7 +138,7 @@ extern char *poisoned_reason;
 // without maintaining static lists of things in the build
 // configuration.  These are helpers to make this work
 // more portably
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma section(".CRT$XCU", read)
 # define w_ctor_fn_type(sym) void __cdecl sym(void)
 # define w_ctor_fn_reg(sym) \
@@ -878,6 +878,8 @@ static inline int w_timeval_compare(struct timeval a, struct timeval b)
  || (defined(__NetBSD__) && (__NetBSD_Version__ < 6099000000))
 /* BSD-style subsecond timespec */
 #define WATCHMAN_ST_TIMESPEC(type) st_##type##timespec
+#elif defined(__MINGW32__)
+#define WATCHMAN_ST_TIMESPEC(type) st_##type##time
 #else
 /* POSIX standard timespec */
 #define WATCHMAN_ST_TIMESPEC(type) st_##type##tim
