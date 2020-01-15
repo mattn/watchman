@@ -117,7 +117,7 @@
 // without maintaining static lists of things in the build
 // configuration.  These are helpers to make this work
 // more portably
-#ifdef _WIN32
+#ifdef _MSC_VER
 #pragma section(".CRT$XCU", read)
 # define w_ctor_fn_type(sym) void __cdecl sym(void)
 # define w_ctor_fn_reg(sym) \

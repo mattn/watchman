@@ -4,12 +4,11 @@
 #ifndef SYS_TIME_H
 #define SYS_TIME_H
 
-#ifndef __MINGW32__
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+#ifndef __MINGW32__
 // Defined by winsock, but we're not pulling that in, so we get
 // to define our own version of the struct.  We choose to define
 // tv_sec as a time_t for the sake of sanity.  This is not ABI
@@ -18,17 +17,19 @@ struct timeval {
   time_t tv_sec;
   time_t tv_usec;
 };
+#endif
 
 int gettimeofday(struct timeval *tv, void *ignored);
 void FILETIME_to_timespec(const FILETIME *ft, struct timespec *ts);
 void FILETIME_LARGE_INTEGER_to_timespec(LARGE_INTEGER ft, struct timespec *ts);
+#ifndef __MINGW32__
 void usleep(int64_t usec);
 void sleep(int sec);
+#endif
+
 
 #ifdef __cplusplus
 }
-#endif
-
 #endif
 
 #endif

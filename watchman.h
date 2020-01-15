@@ -64,6 +64,10 @@ bool w_is_stopping(void);
 void w_request_shutdown(void);
 
 #include "watchman_time.h"
+#ifdef _WIN32
+#include <unistd.h>
+#include <time.h>
+#endif
 
 extern const char *watchman_tmp_dir;
 extern char *watchman_state_file;

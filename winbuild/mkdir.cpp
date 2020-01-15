@@ -3,7 +3,7 @@
 
 #include "watchman.h"
 
-int mkdir(const char* path, int) {
+int os_mkdir(const char* path, int) {
   auto wpath = w_string_piece(path).asWideUNC();
   DWORD err;
   BOOL res;

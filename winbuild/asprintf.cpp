@@ -5,6 +5,7 @@
 
 // Poor-mans asprintf
 
+#ifndef __MINGW32__
 int vasprintf(char **out, WATCHMAN_FMT_STRING(const char *fmt), va_list ap) {
   char stack[512];
   char *buf = stack;
@@ -50,3 +51,4 @@ int asprintf(char **out, WATCHMAN_FMT_STRING(const char *fmt), ...) {
 
   return len;
 }
+#endif

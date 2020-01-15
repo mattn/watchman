@@ -97,5 +97,5 @@ w_string readSymbolicLink(const char* path);
 }
 
 #ifdef _WIN32
-int mkdir(const char* path, int);
+int os_mkdir(const char* path, int);
 #endif

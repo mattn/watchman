@@ -5,6 +5,7 @@
 #include <array>
 #include <limits>
 #include <sstream>
+#include <cstdlib>
 #ifdef __APPLE__
 #include <pthread.h>
 #endif
@@ -315,9 +316,13 @@ void w_setup_signal_handlers(void) {
 #else
   // Don't show error dialogs for background service failures
   SetErrorMode(SEM_FAILCRITICALERRORS);
+
+#ifdef _MSC_VER
   // also tell the C runtime that we should just abort when
   // we abort; don't do the crash reporting dialog.
   _set_abort_behavior(_WRITE_ABORT_MSG, ~0);
+#endif
+
   // Force error output to stderr, don't use a msgbox.
   _set_error_mode(_OUT_TO_STDERR);
   // bridge OS exceptions into our FATAL logger so that we can

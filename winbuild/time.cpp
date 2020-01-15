@@ -3,6 +3,8 @@
 
 #include "watchman.h"
 
+extern "C" {
+
 // 100's of nanoseconds since the FILETIME epoch
 static const uint64_t EPOCH = ((uint64_t) 116444736000000000ULL);
 
@@ -42,6 +44,7 @@ int gettimeofday(struct timeval* tv, void*) {
   return 0;
 }
 
+#ifdef _MSC_VER
 void usleep(int64_t usec) {
   HANDLE timer;
   LARGE_INTEGER ft;
@@ -61,4 +64,7 @@ void usleep(int64_t usec) {
 
 void sleep(int sec) {
   SleepEx(sec * 1000, true);
+}
+#endif
+
 }

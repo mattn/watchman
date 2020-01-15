@@ -37,6 +37,8 @@
 # else
 #  define WATCHMAN_FMT_STRING(x) __format_string x
 # endif
+#else
+# define WATCHMAN_FMT_STRING(x) _Printf_format_string_ x
 #endif
 
 #ifdef __cplusplus
